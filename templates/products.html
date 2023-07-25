@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Product List</h1>
+
+    <!-- Form untuk menambahkan produk baru -->
+    <h2>Add New Product</h2>
+    <a href="/add-product">Add Product</a>
+
+    <!-- Daftar produk yang ada -->
+    <h2>Product List</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Aksi</th>
+        </tr>
+        {{ range . }}
+        <tr>
+            <td>{{ .ID }}</td>
+            <td>{{ .Name }}</td>
+            <td>{{ .Description }}</td>
+            <td>{{ printf "%.2f" .Price }}</td>
+            <td>
+                <a href="/products/{{ .ID }}/edit">Edit</a>
+                <a href="#" onclick="deleteProduct({{ .ID }})">Delete</a>
+            </td>
+        </tr>
+        {{ end }}
+    </table>
+    <script>
+        // Fungsi untuk mengonfirmasi sebelum menghapus produk
+        function deleteProduct(id) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                fetch(`/products/${id}`, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.status === 204) {
+                        alert("Product deleted successfully!");
+                        location.reload();
+                    } else {
+                        alert("Failed to delete product!");
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred while deleting the product.");
+                });
+            }
+        }
+    </script>
+</body>
+</html>
